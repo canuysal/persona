@@ -12,7 +12,14 @@ const LangChainAdapter = ({endpoint, userName}) => {
     return <AiChat
         adapter={adapter}
         composerOptions={{
-            placeholder: `What would you like to learn about ${userName}?`
+            placeholder: `Who is ${userName}?`,
+        }}
+        personaOptions={{
+            assistant: {
+                "name": "Persona",
+                "tagline": `What would you like to know about ${userName}?`,
+                "avatar": <a target="_blank" href='https://github.com/canuysal/persona'><img src='/images/logo.png'/></a>
+            }
         }}
     />
 }

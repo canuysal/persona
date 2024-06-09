@@ -29,14 +29,13 @@ retriever = vectorstore.as_retriever()
 userName = os.environ.get("USER_NAME")
 
 system_prompt = (
-    "You are {userName}'s assistant. "
+    "You are 'Persona', {userName}'s assistant. "
     "You only answer questions related to {userName}."
     "Use the following context to answer "
     "the question. If you don't know the answer, say that you "
     "don't know. Use three sentences maximum and keep the "
     "answer concise."
     "\n\n"
-    "{userName}'s resume:"
     "{context}"
 )
 
