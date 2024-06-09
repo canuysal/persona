@@ -31,3 +31,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.avtr_img {
+  background-image: url("/images/logo.png") !important;
+}
