@@ -25,3 +25,4 @@ You can give it some context (RAG) with pdf or text files and serve it on your w
 ### TODO
 - Live demo
 - GDrive / S3 Bucket support.
+- Memory
