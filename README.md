@@ -12,7 +12,15 @@ You can give it some context (RAG) with pdf or text files and serve it on your w
 #### LangChain Server (LangServe)
 - Get a ChatGPT API KEY.
 - ``` mv .env.sample .env ``` and fill the variables.
-- Create a conda or pip environment, then ``` pip install -r requirements.txt ```
+- Install dependencies:
+  ```
+  sudo apt install pandoc
+  conda create --name persona -c conda-forge python=3.11
+  conda activate persona
+  pip install -r requirements.txt
+  ```
+_Out of the box only .odt and text files are supported.
+If you want to parse pdf, install ```unstructured[pdf]``` package as well. It requires pytorch and makes the docker image too large._
 - Place your resume in the ``` /data ```
 - Run the server with ``` python ./server.py ```
 
