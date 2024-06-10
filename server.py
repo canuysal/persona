@@ -54,7 +54,7 @@ rag_chain = (
 )
 
 app = FastAPI(
-    title=f"{os.environ.get("USER_NAME")}'s Q&A Server",
+    title=f"{os.environ.get('USER_NAME')}'s Q&A Server",
     version="1.0",
     description="Simple Q&A server with a rag chain.",
 )
