@@ -5,7 +5,9 @@
 ## Persona
 
 Persona is a Q&A chatbot for individuals. 
-You can give it some context (RAG) with pdf or text files and serve it on your webpage.
+You can give it some context (RAG) with pdf, odt or text files and serve it on your webpage.
+
+Live Demo: [https://canuysal.vercel.app](https://canuysal.vercel.app)
 
 ### How to use
 
@@ -19,8 +21,9 @@ You can give it some context (RAG) with pdf or text files and serve it on your w
   conda activate persona
   pip install -r requirements.txt
   ```
-_Out of the box only .odt and text files are supported.
-If you want to parse pdf, install ```unstructured[pdf]``` package as well. It requires pytorch and makes the docker image too large._
+  _Out of the box only .odt and .txt files are supported.
+  If you want to parse pdf, install ```unstructured[pdf]``` package as well.
+  It requires pytorch and makes the docker image too large._
 - Place your resume in the ``` /data ```
 - Run the server with ``` python ./server.py ```
 
@@ -31,6 +34,6 @@ If you want to parse pdf, install ```unstructured[pdf]``` package as well. It re
 - ``` yarn dev ```
 
 ### TODO
-- Live demo
+- ~~Live demo~~
 - GDrive / S3 Bucket support.
 - Memory
