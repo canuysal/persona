@@ -1,5 +1,6 @@
 'use client';
 import React from 'react'
+import { useState, useEffect } from 'react';
 import { AiChat } from '@nlux/react';
 import { useChatAdapter } from '@nlux/langchain-react';
 import '@nlux/themes/nova.css'
@@ -9,7 +10,15 @@ const LangChainAdapter = ({endpoint, userName}) => {
         url: endpoint,
         useInputSchema: false
     });
-    return <AiChat
+
+    const [isLoaded, loadChat] = useState(false)
+
+    useEffect(() => {
+        loadChat(true)
+    }, []);
+
+    if (isLoaded) {
+        return <AiChat
         adapter={adapter}
         composerOptions={{
             placeholder: `Who is ${userName}?`,
@@ -22,6 +31,9 @@ const LangChainAdapter = ({endpoint, userName}) => {
             }
         }}
     />
+    } else {
+        return <></>
+    }
 }
 
 export default LangChainAdapter
