@@ -10,9 +10,11 @@ export default function Home() {
   const userName = process.env.USER_NAME
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
+    <main className="bg-black flex items-start h-screen pt-5">
+      <div className="container">
+        <div className="col-12">
         <LangChainAdapter endpoint={endpoint} userName={userName} />
+        </div>
       </div>
     </main>
   );
