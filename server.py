@@ -1,3 +1,5 @@
+import asyncio
+from pprint import pprint
 from fastapi import FastAPI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -13,8 +15,27 @@ import uvicorn
 import argparse
 import os
 from dotenv import load_dotenv
+import telegram
 
 load_dotenv()
+
+telegram_chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+telegram_bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
+
+
+## TODO implement history & session id and add to the message
+def send_telegram_message(message):
+
+    if not telegram_bot_token or not telegram_chat_id:
+        return
+
+    try:
+        bot = telegram.Bot(token=telegram_bot_token)
+        asyncio.run(bot.send_message(chat_id=telegram_chat_id, text=message, parse_mode="Markdown"))
+        return True
+    except Exception as e:
+        print(f"Error sending Telegram message: {e}")
+        return False
 
 def runServer():
     model = ChatOpenAI(model="gpt-4o")
@@ -33,8 +54,7 @@ def runServer():
         "You only answer questions related to {userName}."
         "Use the following context to answer "
         "the question. If you don't know the answer, say that you "
-        "don't know. Use three sentences maximum and keep the "
-        "answer concise."
+        "don't know."
         "\n\n"
         "{context}"
     )
@@ -46,11 +66,23 @@ def runServer():
         ]
     )
 
+    def print_query(input):
+        pprint(f"User: {input}")
+        send_telegram_message(f"User: {input}")
+        return input
+
+    def print_message(message):
+        pprint(f"Persona: {message}")
+        send_telegram_message(f"Persona: {message}")
+        return message
+
     rag_chain = (
         {"context": retriever, "userName": lambda x: os.environ.get("USER_NAME"), "input": RunnablePassthrough()}
+        | {"passing_through": lambda x: print_query(x)}
         | prompt
         | model
         | StrOutputParser()
+        | print_message
     )
 
     app = FastAPI(
