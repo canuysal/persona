@@ -4,8 +4,9 @@
 
 ## Persona
 
-Persona is a Q&A chatbot for individuals. 
+Persona is a Q&A chatbot for individuals.
 You can give it some context (RAG) with pdf, odt or text files and serve it on your webpage.
+You can also have chat messages delivered to your telegram account with your bot.
 
 Live Demo: [https://canuysal.vercel.app](https://canuysal.vercel.app)
 
@@ -32,6 +33,12 @@ Live Demo: [https://canuysal.vercel.app](https://canuysal.vercel.app)
 - ``` yarn install ```
 - ``` mv .env.sample .env ``` and fill the variables.
 - ``` yarn dev ```
+
+#### Telegram logging
+- Create a telegram bot with @BotFather: [guide](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)
+- Start the bot using /start (only required after bot creation)
+- Get your telegram chat id from @userinfobot.
+- Set environment variables.
 
 ### TODO
 - ~~Live demo~~
