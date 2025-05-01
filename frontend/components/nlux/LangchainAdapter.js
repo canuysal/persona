@@ -1,7 +1,7 @@
 'use client';
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { AiChat } from '@nlux/react';
+import { AiChat, ChatAdapter } from '@nlux/react';
 import { useChatAdapter } from '@nlux/langchain-react';
 import '@nlux/themes/nova.css'
 
@@ -32,13 +32,85 @@ const LangChainAdapter = ({ endpoint, userName }) => {
         setSessionId(getOrCreateSessionId());
     }, []);
 
-    const adapter = useChatAdapter({
-        url: endpoint,
-        useInputSchema: false,
-        config: {
-            session_id: sessionId
+    // const adapter = useChatAdapter({
+    //     url: endpoint,
+    //     useInputSchema: false,
+    //     config: {
+    //         session_id: sessionId
+    //     }
+    // });
+
+    const adapter = {
+
+        streamText: async (prompt, observer) => {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                body: JSON.stringify({ prompt: prompt }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (response.status !== 200) {
+                observer.error(new Error('Failed to connect to the server'));
+                return;
+            }
+
+            if (!response.body) {
+                return;
+            }
+
+            // Read a stream of server-sent events
+            // and feed them to the observer as they are being generated
+            const reader = response.body.getReader();
+            const textDecoder = new TextDecoder();
+            let buffer = '';
+
+            // Process the stream without using while(true)
+            try {
+                const processStream = async () => {
+                    let result = await reader.read();
+
+                    while (!result.done) {
+                        buffer += textDecoder.decode(result.value);
+
+                        // Process lines
+                        const lines = buffer.split('\n');
+                        // Keep the last line which might be incomplete
+                        buffer = lines.pop() || '';
+
+                        for (let i = 0; i < lines.length; i++) {
+                            const line = lines[i];
+
+                            // When we see "event: data", take the content from the next "data:" line
+                            if (line.trim() === 'event: data' && i + 1 < lines.length && lines[i + 1].startsWith('data:')) {
+                                const dataLine = lines[i + 1];
+                                const content = dataLine.slice(5).trim(); // Remove "data:" prefix
+
+                                // If it's a JSON string with quotes, parse it
+                                try {
+                                    if (content.startsWith('"') && content.endsWith('"')) {
+                                        const parsedContent = JSON.parse(content);
+                                        observer.next(parsedContent);
+                                    } else {
+                                        observer.next(content);
+                                    }
+                                } catch (e) {
+                                    observer.next(content);
+                                }
+
+                            }
+                        }
+
+                        result = await reader.read();
+                    }
+
+                    observer.complete();
+                };
+
+                processStream().catch(err => observer.error(err));
+            } catch (error) {
+                observer.error(error);
+            }
         }
-    });
+    }
 
     // Load chat history when session ID is available
     useEffect(() => {
@@ -87,4 +159,4 @@ const LangChainAdapter = ({ endpoint, userName }) => {
     );
 };
 
-export default LangChainAdapter
+export default LangChainAdapter;
